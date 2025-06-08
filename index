@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>三年級下學期社會課 50題小測驗</title>
+  <style>
+    body { font-family: sans-serif; max-width: 600px; margin: auto; }
+    .chapter { margin: 1em 0; }
+    .question { margin: 1em 0; }
+    .options label { display: block; margin: 3px 0; }
+    button { margin: 1em 0; }
+    #score { font-weight: bold; color: #336699; }
+  </style>
+</head>
+<body>
+  <h1>三年級下學期社會課 50題小測驗</h1>
+  <div>
+    <button onclick="showChapter(0)">第四章</button>
+    <button onclick="showChapter(1)">第五章</button>
+    <button onclick="showChapter(2)">第六章</button>
+    <button onclick="showChapter(-1)">全部</button>
+  </div>
+  <div id="quiz"></div>
+  <div id="score"></div>
+  <button id="submitBtn" onclick="submitQuiz()" style="display:none;">交卷並看分數</button>
+  <button id="restartBtn" onclick="restartQuiz()" style="display:none;">重新作答</button>
+  <script>
+    // 依章節分配題數
+    // 第四章 17題，第五章 16題，第六章 17題
+    const chapters = [
+      {
+        title: "第四章 消費與選擇",
+        questions: [
+          {q: "下列哪一項是聰明消費的做法？", options: ["看到想要的東西就買", "先比較價格再決定", "只買最貴的"], answer: 1},
+          {q: "買東西時應該注意什麼？", options: ["商品標示", "包裝顏色", "廣告明星"], answer: 0},
+          {q: "下列哪個不是消費時考慮的因素？", options: ["價格", "品質", "廣告明星"], answer: 2},
+          {q: "如果商品有瑕疵，應該怎麼辦？", options: ["不理會", "向店家反映", "自己修理"], answer: 1},
+          {q: "貨比三家的意思是？", options: ["只買第一家", "比較多家商品", "買最貴的"], answer: 1},
+          {q: "下列何者為正確的消費行為？", options: ["亂花錢", "記帳", "借錢買不需要的東西"], answer: 1},
+          {q: "下列何者不是消費者的權利？", options: ["退換貨", "要求商品安全", "強迫賣家打折"], answer: 2},
+          {q: "下列哪一項最能幫助我們做出正確消費選擇？", options: ["比較商品資訊", "只聽朋友推薦", "買越多越好"], answer: 0},
+          {q: "商品標示上不需要有什麼？", options: ["生產日期", "價格", "消費者電話"], answer: 2},
+          {q: "下列哪一項是消費陷阱？", options: ["虛假廣告", "正確標示", "官方網站"], answer: 0},
+          {q: "消費時遇到問題可向哪裡求助？", options: ["消費者保護單位", "朋友", "鄰居"], answer: 0},
+          {q: "下列哪一項屬於衝動消費？", options: ["計畫購物", "臨時看到就買", "列購物清單"], answer: 1},
+          {q: "下列哪一項可幫助節省開銷？", options: ["比價", "亂買", "不看價格"], answer: 0},
+          {q: "購買食品時應注意什麼？", options: ["有效日期", "包裝顏色", "廣告詞"], answer: 0},
+          {q: "為什麼要學習消費知識？", options: ["保護自己權益", "增加花費", "亂買東西"], answer: 0},
+          {q: "下列哪一項是合理消費？", options: ["量入為出", "超前消費", "借錢大買"], answer: 0},
+          {q: "下列哪個不是購物前該做的？", options: ["列清單", "規劃預算", "亂買"], answer: 2},
+        ]
+      },
+      {
+        title: "第五章 家鄉的地名",
+        questions: [
+          {q: "家鄉地名有什麼意義？", options: ["代表地方特色或歷史", "只是隨便取的", "和天氣有關"], answer: 0},
+          {q: "地名常常和什麼有關？", options: ["動物", "人物", "以上皆是"], answer: 2},
+          {q: "下列哪一個是常見的地名來源？", options: ["景物", "電器", "食物"], answer: 0},
+          {q: "家鄉的地名可幫助我們了解什麼？", options: ["天氣", "地方歷史", "外國文化"], answer: 1},
+          {q: "下列哪個不是地名由來？", options: ["地形", "人物", "數學運算"], answer: 2},
+          {q: "地圖上的地名主要用來？", options: ["裝飾", "辨識地點", "畫畫"], answer: 1},
+          {q: "地名可能來自什麼？", options: ["傳說故事", "電視劇", "網路流行語"], answer: 0},
+          {q: "下列哪一項與地名無關？", options: ["地方產業", "自然景觀", "手機品牌"], answer: 2},
+          {q: "家鄉的地名可以記錄什麼？", options: ["人口數", "過去發展", "手機型號"], answer: 1},
+          {q: "地名若常變動，會造成？", options: ["混亂", "方便", "沒影響"], answer: 0},
+          {q: "下列哪一項不是地名的功能？", options: ["辨識地點", "聯絡情感", "消費比較"], answer: 2},
+          {q: "哪一個地名可能與地形有關？", options: ["大山", "小明", "電腦村"], answer: 0},
+          {q: "地名可反映家鄉的？", options: ["文化特色", "國外流行", "遊戲名稱"], answer: 0},
+          {q: "下列何者不是地名的來源？", options: ["歷史人物", "自然環境", "食譜名稱"], answer: 2},
+          {q: "地名與哪個單位常有關？", options: ["學校", "行政區", "遊樂場"], answer: 1},
+          {q: "地名的改變會影響什麼？", options: ["地方認同感", "手機品牌", "天氣"], answer: 0},
+        ]
+      },
+      {
+        title: "第六章 家鄉的故事",
+        questions: [
+          {q: "家鄉的故事可以讓我們了解什麼？", options: ["家鄉的歷史和人物", "外國的文化", "天氣預報"], answer: 0},
+          {q: "下列哪項是家鄉重要的地標？", options: ["超市", "古蹟", "百貨公司"], answer: 1},
+          {q: "家鄉的傳說故事有助於？", options: ["增進認同", "記住廣告", "學外語"], answer: 0},
+          {q: "下列何者為家鄉歷史的見證？", options: ["古老建築", "新開商店", "電影院"], answer: 0},
+          {q: "家鄉故事常與什麼有關？", options: ["歷史事件", "電玩遊戲", "漫畫角色"], answer: 0},
+          {q: "為什麼要了解家鄉的故事？", options: ["認識自己的根", "學做菜", "學外語"], answer: 0},
+          {q: "下列哪一項是家鄉文化的代表？", options: ["民俗活動", "外國電影", "手機遊戲"], answer: 0},
+          {q: "家鄉故事可傳承什麼？", options: ["傳統精神", "廣告詞", "流行歌"], answer: 0},
+          {q: "下列哪個不是家鄉故事的內容？", options: ["傳說", "歷史人物", "數學公式"], answer: 2},
+          {q: "家鄉的地標會成為什麼？", options: ["旅遊景點", "國外品牌", "網站名稱"], answer: 0},
+          {q: "家鄉的故事可讓我們感受？", options: ["地方歸屬感", "國際時尚", "網紅熱潮"], answer: 0},
+          {q: "下列哪項可幫助保存家鄉故事？", options: ["書寫紀錄", "丟棄文物", "破壞古蹟"], answer: 0},
+          {q: "家鄉故事裡人物常有什麼特質？", options: ["勇敢", "懶惰", "粗心"], answer: 0},
+          {q: "下列何者不是家鄉故事的傳播方式？", options: ["口述", "網路", "亂編"], answer: 2},
+          {q: "家鄉故事能讓我們？", options: ["認識家鄉", "忘記家鄉", "討厭歷史"], answer: 0},
+          {q: "下列哪一項是家鄉故事的價值？", options: ["教育意義", "娛樂八卦", "網路迷因"], answer: 0},
+          {q: "家鄉故事中常見的地點是？", options: ["古蹟", "百貨公司", "主題樂園"], answer: 0},
+        ]
+      }
+    ];
+
+    // 合併所有題目
+    const allQuestions = chapters.reduce((arr, ch) => arr.concat(ch.questions), []);
+    let currentChapter = -1; // -1 代表全部
+    let answers = Array(allQuestions.length).fill(null);
+    let scoreShown = false;
+
+    function showChapter(idx) {
+      currentChapter = idx;
+      scoreShown = false;
+      renderQuiz();
+      document.getElementById('score').innerHTML = '';
+      document.getElementById('submitBtn').style.display = 'inline-block';
+      document.getElementById('restartBtn').style.display = 'none';
+    }
+
+    function renderQuiz() {
+      let html = "";
+      let questionsToShow, offset = 0;
+      if (currentChapter === -1) {
+        html += `<h2>全部題目</h2>`;
+        questionsToShow = allQuestions;
+        offset = 0;
+      } else {
+        html += `<h2>${chapters[currentChapter].title}</h2>`;
+        questionsToShow = chapters[currentChapter].questions;
+        // offset 是本章開始的題目編號
+        offset = chapters.slice(0, currentChapter).reduce((sum, ch) => sum + ch.questions.length, 0);
+      }
+      questionsToShow.forEach((q, i) => {
+        const qIdx = offset + i;
+        html += `<div class="question">
+          <div>第${qIdx + 1}題：${q.q}</div>
+          <div class="options">`;
+        q.options.forEach((opt, j) => {
+          html += `<label>
+            <input type="radio" name="q${qIdx}" value="${j}" ${answers[qIdx] == j ? 'checked' : ''} ${scoreShown ? 'disabled' : ''} onclick="selectAnswer(${qIdx},${j})"/>
+            ${opt}
+          </label>`;
+        });
+        html += `</div></div>`;
+      });
+      document.getElementById('quiz').innerHTML = html;
+    }
+
+    function selectAnswer(qIdx, ansIdx) {
+      answers[qIdx] = ansIdx;
+    }
+
+    function submitQuiz() {
+      scoreShown = true;
+      let score = 0;
+      allQuestions.forEach((q, idx) => {
+        if (answers[idx] == q.answer) score++;
+      });
+      document.getElementById('score').innerHTML = `你的分數：${score} / ${allQuestions.length}`;
+      renderQuiz();
+      document.getElementById('submitBtn').style.display = 'none';
+      document.getElementById('restartBtn').style.display = 'inline-block';
+    }
+
+    function restartQuiz() {
+      answers = Array(allQuestions.length).fill(null);
+      scoreShown = false;
+      renderQuiz();
+      document.getElementById('score').innerHTML = '';
+      document.getElementById('submitBtn').style.display = 'inline-block';
+      document.getElementById('restartBtn').style.display = 'none';
+    }
+
+    // 預設顯示全部
+    showChapter(-1);
+  </script>
+</body>
+</html>
